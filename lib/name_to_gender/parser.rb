@@ -10,13 +10,15 @@ module NameToGender
     def parse
       lookup = Lookup.new
 
-      file = File.open(@data_file, "r", :encoding => "iso8859-1:UTF-8").read
-      file.gsub!(/\r\n?/, "\n")
-      file.each_line do |line|
-        next if line.start_with?("#") || line.start_with?("=")
-        next if line[USA_OFFSET] == " "
-        gender, name, * = line.split
-        lookup.add_name(gender, name)
+      File.open(@data_file, "r", :encoding => "iso8859-1:UTF-8") do |file|
+        text = file.read
+        text.gsub!(/\r\n?/, "\n")
+        text.each_line do |line|
+          next if line.start_with?("#") || line.start_with?("=")
+          next if line[USA_OFFSET] == " "
+          gender, name, * = line.split
+          lookup.add_name(gender, name)
+        end
       end
 
       lookup
